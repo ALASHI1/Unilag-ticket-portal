@@ -1,0 +1,739 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>UNILAG Ticket Portal</title>
+  <style>
+    :root {
+      --bg: #f3efe6;
+      --panel: rgba(255, 252, 246, 0.92);
+      --panel-strong: #fffaf2;
+      --ink: #132327;
+      --muted: #5d6d73;
+      --line: rgba(19, 35, 39, 0.1);
+      --brand: #b74b23;
+      --brand-deep: #7c2f16;
+      --brand-soft: #f2d3bd;
+      --ok: #2f7c4a;
+      --ok-soft: rgba(47, 124, 74, 0.12);
+      --warn: #a03d1b;
+      --warn-soft: rgba(160, 61, 27, 0.12);
+      --shadow: 0 24px 60px rgba(67, 38, 20, 0.12);
+      --radius-xl: 28px;
+      --radius-lg: 20px;
+      --radius-md: 14px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      font-family: Georgia, "Times New Roman", serif;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(183, 75, 35, 0.18), transparent 26%),
+        radial-gradient(circle at 100% 20%, rgba(19, 35, 39, 0.08), transparent 24%),
+        linear-gradient(180deg, #fbf8f2 0%, var(--bg) 100%);
+    }
+
+    .shell {
+      width: min(1120px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 22px 0 52px;
+    }
+
+    .masthead {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .wordmark {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--ink);
+      text-decoration: none;
+      font-size: 0.95rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .wordmark strong {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--brand), var(--brand-deep));
+      color: #fff9f1;
+      box-shadow: var(--shadow);
+    }
+
+    .admin-link {
+      color: var(--ink);
+      text-decoration: none;
+      padding: 12px 16px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.55);
+      backdrop-filter: blur(12px);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
+      gap: 18px;
+      align-items: stretch;
+      margin-bottom: 22px;
+    }
+
+    .hero-card,
+    .side-card,
+    .panel,
+    .ticket-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius-xl);
+      background: var(--panel);
+      backdrop-filter: blur(14px);
+      box-shadow: var(--shadow);
+    }
+
+    .hero-card {
+      overflow: hidden;
+      background:
+        linear-gradient(135deg, rgba(183, 75, 35, 0.98), rgba(84, 33, 18, 0.98));
+      color: #fff8f1;
+    }
+
+    .hero-inner {
+      padding: 34px;
+    }
+
+    .hero-kicker {
+      display: inline-block;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: rgba(255, 248, 241, 0.16);
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+
+    .hero h1 {
+      margin: 0 0 12px;
+      font-size: clamp(2.25rem, 5vw, 4.2rem);
+      line-height: 0.9;
+      letter-spacing: -0.05em;
+      max-width: 7ch;
+    }
+
+    .hero p {
+      margin: 0;
+      max-width: 34rem;
+      color: rgba(255, 248, 241, 0.84);
+      font-size: 1.02rem;
+      line-height: 1.6;
+    }
+
+    .hero-search {
+      margin-top: 24px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 12px;
+    }
+
+    .hero-search input,
+    .pay-form input {
+      width: 100%;
+      border: 1px solid rgba(255, 248, 241, 0.18);
+      border-radius: 18px;
+      padding: 16px 18px;
+      font: inherit;
+      font-size: 1rem;
+      outline: none;
+    }
+
+    .hero-search input {
+      background: rgba(255, 255, 255, 0.14);
+      color: #fff8f1;
+      text-transform: uppercase;
+    }
+
+    .hero-search input::placeholder {
+      color: rgba(255, 248, 241, 0.6);
+    }
+
+    .cta,
+    .pay-button {
+      border: 0;
+      border-radius: 999px;
+      padding: 15px 20px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
+    }
+
+    .cta {
+      background: #fff8f1;
+      color: var(--brand-deep);
+      box-shadow: 0 10px 28px rgba(24, 10, 4, 0.16);
+    }
+
+    .cta:hover,
+    .pay-button:hover {
+      transform: translateY(-1px);
+    }
+
+    .side-card {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background:
+        linear-gradient(180deg, rgba(255, 250, 242, 0.98), rgba(249, 241, 230, 0.96));
+    }
+
+    .side-card h2 {
+      margin: 0 0 10px;
+      font-size: 1.2rem;
+    }
+
+    .side-card p {
+      margin: 0 0 18px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .steps {
+      display: grid;
+      gap: 10px;
+    }
+
+    .step {
+      display: grid;
+      grid-template-columns: 34px 1fr;
+      gap: 10px;
+      align-items: start;
+    }
+
+    .step strong {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--brand-soft);
+      color: var(--brand-deep);
+      font-size: 0.9rem;
+    }
+
+    .step span {
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .banner {
+      padding: 18px 20px;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--line);
+      margin-bottom: 18px;
+      box-shadow: var(--shadow);
+      background: var(--panel-strong);
+    }
+
+    .banner.success {
+      border-color: rgba(47, 124, 74, 0.15);
+      background: linear-gradient(180deg, rgba(47, 124, 74, 0.1), rgba(255, 255, 255, 0.88));
+    }
+
+    .banner.error {
+      border-color: rgba(160, 61, 27, 0.16);
+      background: linear-gradient(180deg, rgba(160, 61, 27, 0.1), rgba(255, 255, 255, 0.88));
+    }
+
+    .banner h2 {
+      margin: 0 0 6px;
+      font-size: 1.08rem;
+    }
+
+    .banner p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.55fr) minmax(280px, 0.85fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .panel {
+      padding: 24px;
+    }
+
+    .panel h2 {
+      margin: 0 0 8px;
+      font-size: 1.25rem;
+    }
+
+    .panel-copy {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.65;
+      max-width: 58ch;
+    }
+
+    .result-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 14px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .result-header .plate-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 999px;
+      padding: 9px 14px;
+      background: rgba(183, 75, 35, 0.1);
+      color: var(--brand-deep);
+      font-size: 0.9rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .tickets {
+      display: grid;
+      gap: 16px;
+    }
+
+    .ticket-card {
+      padding: 22px;
+      background: linear-gradient(180deg, #fffdf8 0%, #fff6ec 100%);
+    }
+
+    .ticket-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: start;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    .ticket-id {
+      margin: 0 0 6px;
+      font-size: 1.15rem;
+    }
+
+    .ticket-sub {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      padding: 8px 14px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .badge.unpaid {
+      background: var(--warn-soft);
+      color: var(--warn);
+    }
+
+    .badge.paid {
+      background: var(--ok-soft);
+      color: var(--ok);
+    }
+
+    .facts {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .fact {
+      padding: 14px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid var(--line);
+    }
+
+    .fact span {
+      display: block;
+      font-size: 0.74rem;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .fact strong {
+      font-size: 1rem;
+    }
+
+    .checkout {
+      margin-top: 10px;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.74);
+      overflow: hidden;
+    }
+
+    .checkout-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 18px;
+      background: linear-gradient(180deg, rgba(183, 75, 35, 0.08), rgba(255, 255, 255, 0));
+      border-bottom: 1px solid var(--line);
+      flex-wrap: wrap;
+    }
+
+    .checkout-title {
+      margin: 0;
+      font-size: 1rem;
+    }
+
+    .checkout-note {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.5;
+    }
+
+    .checkout-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      background: rgba(19, 35, 39, 0.06);
+      color: var(--ink);
+    }
+
+    .checkout-body {
+      padding: 18px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(220px, 280px);
+      gap: 16px;
+      align-items: start;
+    }
+
+    .pay-form {
+      display: grid;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .pay-field label {
+      display: block;
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-bottom: 7px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .pay-field input {
+      background: #fff;
+      border: 1px solid var(--line);
+      color: var(--ink);
+      min-width: 0;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.7);
+    }
+
+    .pay-button {
+      background: var(--ink);
+      color: #fff8f1;
+      box-shadow: 0 12px 24px rgba(19, 35, 39, 0.18);
+      width: 100%;
+      justify-self: start;
+    }
+
+    .helper {
+      padding: 16px 18px;
+      border-radius: 18px;
+      background: rgba(19, 35, 39, 0.04);
+      border: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 0.93rem;
+      line-height: 1.55;
+    }
+
+    .helper strong {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--ink);
+    }
+
+    .mini-list {
+      display: grid;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .mini-item {
+      padding: 14px 16px;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.64);
+    }
+
+    .mini-item strong {
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .mini-item span {
+      color: var(--muted);
+      line-height: 1.45;
+      font-size: 0.94rem;
+    }
+
+    @media (max-width: 920px) {
+      .hero,
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .facts {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .pay-shell {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 680px) {
+      .shell {
+        width: min(100% - 20px, 1120px);
+      }
+
+      .hero-inner,
+      .panel,
+      .side-card,
+      .ticket-card {
+        padding: 20px;
+      }
+
+      .hero-search,
+      .pay-form,
+      .checkout-body {
+        grid-template-columns: 1fr;
+      }
+
+      .facts {
+        grid-template-columns: 1fr;
+      }
+
+      .masthead {
+        align-items: stretch;
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <div class="masthead">
+      <a class="wordmark" href="/">
+        <strong>U</strong>
+        <span>UNILAG Ticket Portal</span>
+      </a>
+      <a class="admin-link" href="/admin">Admin dashboard</a>
+    </div>
+
+    <section class="hero">
+      <article class="hero-card">
+        <div class="hero-inner">
+          <span class="hero-kicker">Campus Enforcement Portal</span>
+          <h1>Check Your Traffic Ticket</h1>
+          <p>Search by licence plate, review any linked speed-enforcement record, and continue to Paystack for secure payment of outstanding campus fines.</p>
+          <form class="hero-search" method="get" action="/">
+            <input type="text" name="plate" value="{{ plate }}" placeholder="Enter licence plate number" required>
+            <button class="cta" type="submit">Search Ticket</button>
+          </form>
+        </div>
+      </article>
+
+      <aside class="side-card">
+        <div>
+          <h2>Before you pay</h2>
+          <p>The portal checks the same ticket database used by campus security. Only verified Paystack payments settle a record.</p>
+        </div>
+        <div class="steps">
+          <div class="step">
+            <strong>1</strong>
+            <span>Enter the vehicle plate number exactly as it appears on the vehicle.</span>
+          </div>
+          <div class="step">
+            <strong>2</strong>
+            <span>Review the ticket amount, recorded speed, and current status.</span>
+          </div>
+          <div class="step">
+            <strong>3</strong>
+            <span>Provide an email address and continue to Paystack for secure checkout.</span>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    {% if success %}
+    <section class="banner success">
+      <h2>Payment confirmed</h2>
+      <p>Your Paystack payment was verified successfully and the ticket has been marked as settled.</p>
+    </section>
+    {% endif %}
+
+    {% if error %}
+    <section class="banner error">
+      <h2>Payment notice</h2>
+      <p>{{ error }}</p>
+    </section>
+    {% endif %}
+
+    <section class="grid">
+      <section class="panel">
+        {% if tickets %}
+        <div class="result-header">
+          <div>
+            <h2>Ticket results</h2>
+            <p class="panel-copy">Review the fine details below before continuing to payment.</p>
+          </div>
+          <span class="plate-chip">Plate {{ plate }}</span>
+        </div>
+
+        <div class="tickets">
+          {% for ticket in tickets %}
+          <article class="ticket-card">
+            <div class="ticket-top">
+              <div>
+                <h3 class="ticket-id">{{ ticket.ticket_id }}</h3>
+                <p class="ticket-sub">Recorded on {{ ticket.created_at }}</p>
+              </div>
+              <span class="badge {{ ticket.status|lower }}">{{ ticket.status }}</span>
+            </div>
+
+            <div class="facts">
+              <div class="fact">
+                <span>Fine</span>
+                <strong>&#8358;{{ ticket.fine }}</strong>
+              </div>
+              <div class="fact">
+                <span>Measured speed</span>
+                <strong>{{ "%.2f"|format(ticket.speed) }} km/h</strong>
+              </div>
+              <div class="fact">
+                <span>Speed limit</span>
+                <strong>{{ "%.0f"|format(ticket.speed_limit) }} km/h</strong>
+              </div>
+              <div class="fact">
+                <span>Status</span>
+                <strong>{{ ticket.status }}</strong>
+              </div>
+            </div>
+
+            <div class="checkout">
+              <div class="checkout-head">
+                <div>
+                  <h4 class="checkout-title">Payment checkout</h4>
+                  <p class="checkout-note">Use an email address you can access. Paystack will use it for your payment receipt.</p>
+                </div>
+                {% if ticket.status == "UNPAID" %}
+                <span class="checkout-status">Ready for payment</span>
+                {% else %}
+                <span class="checkout-status">Settled</span>
+                {% endif %}
+              </div>
+
+              <div class="checkout-body">
+                {% if ticket.status == "UNPAID" %}
+                <form class="pay-form" method="post" action="/portal/tickets/{{ ticket.ticket_id }}/pay">
+                  <input type="hidden" name="plate" value="{{ plate }}">
+                  <div class="pay-field">
+                    <label for="email-{{ ticket.ticket_id }}">Email for receipt and verification</label>
+                    <input id="email-{{ ticket.ticket_id }}" type="email" name="email" placeholder="name@example.com" required>
+                  </div>
+                  <button class="pay-button" type="submit">Continue to Paystack</button>
+                </form>
+                <div class="helper">
+                  {% if paystack_public_key %}
+                  <strong>Secure redirect</strong>
+                  You will be redirected to Paystack to complete payment. The ticket stays unpaid until the backend verifies the payment reference successfully.
+                  {% else %}
+                  <strong>Configuration required</strong>
+                  Paystack keys are not configured yet on this server, so payment checkout is currently unavailable.
+                  {% endif %}
+                </div>
+                {% else %}
+                <div class="helper">
+                  <strong>No further action required</strong>
+                  This ticket has already been settled. Keep the receipt email or confirmation reference for your records if needed.
+                </div>
+              </div>
+              {% endif %}
+            </div>
+          </article>
+          {% endfor %}
+        </div>
+        {% elif plate %}
+        <h2>No ticket found</h2>
+        <p class="panel-copy">No violation records were found for plate <strong>{{ plate }}</strong>. Double-check the spelling and try again if needed.</p>
+        {% else %}
+        <h2>Search for a ticket</h2>
+        <p class="panel-copy">Enter a licence plate in the search box above to check whether there is an active or historical ticket linked to that vehicle.</p>
+        {% endif %}
+      </section>
+
+      <aside class="panel">
+        <h2>How it works</h2>
+        <p class="panel-copy">This site is connected to the same backend used by the enforcement system. Search results and payment status are read directly from the ticket database.</p>
+
+        <div class="mini-list">
+          <div class="mini-item">
+            <strong>Shared record source</strong>
+            <span>The portal and the security dashboard use the same ticket data, so updates appear in both places.</span>
+          </div>
+          <div class="mini-item">
+            <strong>Payment verification</strong>
+            <span>Payments are initialized through Paystack and verified on the server before re-entry restrictions are cleared.</span>
+          </div>
+          <div class="mini-item">
+            <strong>Need support?</strong>
+            <span>If the ticket details look wrong, use the admin office or security control room process rather than forcing payment from the portal.</span>
+          </div>
+        </div>
+      </aside>
+    </section>
+  </main>
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>UNILAG Admin Login</title>
+  <style>
+    :root {
+      --bg: #f2efe8;
+      --panel: rgba(255, 253, 248, 0.94);
+      --ink: #132125;
+      --muted: #637178;
+      --line: rgba(19, 33, 37, 0.1);
+      --brand: #ab4720;
+      --brand-deep: #762d16;
+      --warn: #a03e1b;
+      --shadow: 0 24px 60px rgba(43, 28, 18, 0.12);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      font-family: Georgia, "Times New Roman", serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(171, 71, 32, 0.15), transparent 26%),
+        linear-gradient(180deg, #faf8f2 0%, var(--bg) 100%);
+    }
+
+    .card {
+      width: min(460px, calc(100% - 24px));
+      padding: 30px;
+      border-radius: 28px;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+
+    .kicker {
+      display: inline-block;
+      margin-bottom: 16px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: rgba(171, 71, 32, 0.1);
+      color: var(--brand-deep);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 0.76rem;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: clamp(2rem, 5vw, 3rem);
+      line-height: 0.94;
+      letter-spacing: -0.05em;
+    }
+
+    p {
+      margin: 0 0 20px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .error {
+      margin-bottom: 16px;
+      padding: 14px 16px;
+      border-radius: 16px;
+      background: rgba(160, 62, 27, 0.1);
+      color: var(--warn);
+      border: 1px solid rgba(160, 62, 27, 0.14);
+    }
+
+    .field {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 0.82rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    input {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 15px 16px;
+      font: inherit;
+      background: #fff;
+      color: var(--ink);
+    }
+
+    button {
+      width: 100%;
+      border: 0;
+      border-radius: 999px;
+      padding: 15px 18px;
+      background: linear-gradient(135deg, var(--brand), var(--brand-deep));
+      color: #fff8f1;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 14px 28px rgba(36, 18, 10, 0.14);
+    }
+
+    .portal-link {
+      display: inline-block;
+      margin-top: 18px;
+      color: var(--ink);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(19, 33, 37, 0.2);
+      font-size: 0.95rem;
+    }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <span class="kicker">Restricted Access</span>
+    <h1>Admin Login</h1>
+    <p>Sign in to access the enforcement dashboard, internal ticket controls, and monitoring views.</p>
+
+    {% if error %}
+    <div class="error">{{ error }}</div>
+    {% endif %}
+
+    <form method="post" action="/admin/login">
+      <input type="hidden" name="next" value="{{ next_url }}">
+      <div class="field">
+        <label for="username">Username</label>
+        <input id="username" type="text" name="username" autocomplete="username" required>
+      </div>
+      <div class="field">
+        <label for="password">Password</label>
+        <input id="password" type="password" name="password" autocomplete="current-password" required>
+      </div>
+      <button type="submit">Sign In</button>
+    </form>
+
+    <a class="portal-link" href="/">Back to public portal</a>
+  </main>
+</body>
+</html>

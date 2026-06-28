@@ -1,0 +1,15 @@
+[Unit]
+Description=UNILAG Traffic Monitoring Flask Backend
+After=network.target
+
+[Service]
+User=pi
+Group=www-data
+WorkingDirectory=/home/pi/unilag_speed_enforcement
+Environment="PATH=/home/pi/unilag_speed_enforcement/.venv/bin"
+ExecStart=/home/pi/unilag_speed_enforcement/.venv/bin/gunicorn --workers 2 --bind 0.0.0.0:5000 wsgi:app
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
